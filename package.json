@@ -1,0 +1,29 @@
+{
+  "name": "com.ezra.reports",
+  "version": "1.0.0",
+  "description": "Ezra MRI reports API",
+  "main": "index.js",
+  "scripts": {
+    "serve": "npm index.js",
+    "test": "npm test"
+  },
+  "dependencies": {
+    "cors": "2.8.5",
+    "express": "4.17.2",
+    "node-localstorage": "2.2.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "tbd"
+  },
+  "keywords": [
+    "node",
+    "nodejs",
+    "express",
+    "expressjs",
+    "ezra",
+    "api"
+  ],
+  "author": "Maksym Krutskykh",
+  "license": "UNLICENSED"
+}
