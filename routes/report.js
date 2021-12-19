@@ -9,36 +9,58 @@ router.get(`/reports/:id/`, (req, res) => {
     res.json(JSON.parse(localStorage.getItem(req.params.id)));
 })
 
+
 router.put(`/reports/:id/checkout/`, (req, res) => {
-    // console.log(JSON.stringify(req.body))
+    console.log(Date.now())
+
     let status
     let response = {}
-    if (JSON.stringify(req.body).length <= 2) {
-        response.success = false
-        response.data = { error: `Missing body`, errorMessage: `Please put body into the request` };
-        status = 400
-    } else {
-        response.success = true
-        response.data = { message: `Record was created!`, record: req.body };
-        localStorage.setItem(req.body.id, JSON.stringify(req.body));
-        status = 201
-    }
-    /*
-    Create/update report record with 
-    {
-        id: 213141
-        data: {
-            ownershipClaimed: true,
-            ownershipStarted: 163234489897,
-            ownerId: 298237,
-        }
 
+    if (!req.query.userId) {
+        response.success = false
+        response.data = { error: `Missing user id`, errorMessage: `Please put name into the request query` };
+        res.status(400).json(response)
     }
-    */
-    // 0. Check if report is claimed
-    // res.json(JSON.parse(localStorage.getItem(report.id)));
 
     // 1. Create or update report with new ownership
+    let recordRaw = localStorage.getItem(req.params.id);
+    if (recordRaw) {
+        let record = JSON.parse(recordRaw);
+        if (record.data.ownershipClaimed) {
+            response.success = false
+            response.data = { error: `Checked out`, errorMessage: `Report already checked out` };
+            status = 400
+        } else {
+            // Check out existing report record
+            response.success = true
+            let record = {
+                id: req.params.id,
+                data: {
+                    ownershipClaimed: true,
+                    ownershipStarted: Date.now(),
+                    ownerId: req.query.userId,
+                }
+
+            }
+            localStorage.setItem(record.id, JSON.stringify(record));
+            status = 201
+        }
+    } else {
+        // Create new report record in the db and check it out
+        let record = {
+            id: req.params.id,
+            data: {
+                ownershipClaimed: true,
+                ownershipStarted: Date.now(),
+                ownerId: req.query.userId,
+            }
+
+        }
+        response.success = true
+        response.data = { message: `Record was created!`, record: record };
+        localStorage.setItem(record.id, JSON.stringify(record));
+        status = 201
+    }
     // 2. Start timer on release endpoint, check env file for value
     // 3. If other user is checking out this report, show error message
     res.status(status).json(response)

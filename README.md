@@ -2,7 +2,10 @@
 
 1. Navigate to repo folder in the terminal
 2. Start node/express server with `npm run serve`
-3. Make calls via curl or Postman to `http://localhost:3434/reports/{id}/checkout` endpoint, where `id` is any number.
+3. Make calls via curl or Postman to `http://localhost:3434/reports/{id}/checkout?userId={userId}` endpoint, where `id` and `userId` are any numbers.
+
+Note 1: URI naming changed to plural `reports` as per REST API general convention.
+Note 2: .env file is checked out to speedup communication, sure it's should not.
 
 ## Task
 
@@ -11,9 +14,6 @@ members. One of the requirements of this app is that only one user can work on a
 report at a time.
 
 ### Section 1
-
-Note 1: URI naming changed to plural `reports` as per REST API general convention.
-Note 2: .env file is checked out to speedup communication, sure it's should not.
 
 For your assignment you will implement three endpoints that mimic this subset functionality.
 
