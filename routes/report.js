@@ -11,8 +11,6 @@ router.get(`/reports/:id/`, (req, res) => {
 
 
 router.put(`/reports/:id/checkout/`, (req, res) => {
-    console.log(Date.now())
-
     let status
     let response = {}
 
@@ -22,7 +20,7 @@ router.put(`/reports/:id/checkout/`, (req, res) => {
         res.status(400).json(response)
     }
 
-    // 1. Create or update report with new ownership
+    // Create or update report with new ownership
     let recordRaw = localStorage.getItem(req.params.id);
     if (recordRaw) {
         let record = JSON.parse(recordRaw);
@@ -42,7 +40,8 @@ router.put(`/reports/:id/checkout/`, (req, res) => {
                 }
 
             }
-            localStorage.setItem(record.id, JSON.stringify(record));
+            localStorage.setItem(record.id, JSON.stringify(record))
+            setReleaseTimer(record.id)
             status = 201
         }
     } else {
@@ -59,28 +58,116 @@ router.put(`/reports/:id/checkout/`, (req, res) => {
         response.success = true
         response.data = { message: `Record was created!`, record: record };
         localStorage.setItem(record.id, JSON.stringify(record));
+        setReleaseTimer(record.id)
         status = 201
     }
-    // 2. Start timer on release endpoint, check env file for value
-    // 3. If other user is checking out this report, show error message
     res.status(status).json(response)
 })
 
 router.put(`/reports/:id/release`, (req, res) => {
-    // 0. Check if report is claimed, error if it is.
-    // 1. Check if user is a current owner of the report, error if not.
-    // 2. Release ownership
-    res.send(`you requested a id ${req.params.id} for user ${req.query.name}`);
+    let status
+    let response = {}
+
+    if (!req.query.userId) {
+        response.success = false
+        response.data = { error: `Missing user id`, errorMessage: `Please put name into the request query` };
+        res.status(400).json(response)
+    }
+
+    let recordRaw = localStorage.getItem(req.params.id);
+
+    if (!recordRaw) {
+        response.success = false
+        response.data = { error: `Missing report record`, errorMessage: `Please check report id the request query` };
+        res.status(400).json(response)
+    }
+
+    let record = JSON.parse(recordRaw);
+
+    if (record.data.ownerId != req.query.userId) {
+        response.success = false
+        response.data = {
+            error: `Ownership error`,
+            errorMessage: `You are not the current owner of this report record.
+            \nWait for up to 60 minutes for ownership release.`
+        };
+        res.status(400).json(response)
+    }
+
+    if (record.data.ownershipClaimed) {
+        let record = JSON.parse(recordRaw);
+        record.data.ownershipClaimed = false
+        localStorage.setItem(record.id, JSON.stringify(record));
+        response.success = true
+        response.data = {};
+        status = 201
+    } else {
+        response.success = false
+        response.data = {
+            error: `Ownership already released`,
+            errorMessage: `You have previously release the ownership for this report record or timer is expired`
+        };
+        status = 400
+    }
+
+    res.status(status).json(response)
 })
 
 router.put(`/reports/:id/renew`, (req, res) => {
-    // 0. Check if report is claimed, error if it is.
-    // 1. Check if user is a current owner of the report, error if not.
-    // 2. Update report with new ownershipStarted
-    // 3. Start timer on release endpoint, check env file for value
-    // 4. If other user is checking out this report, show error message
-    res.send(`you requested a id ${req.params.id} for user ${req.query.name}`);
+    let status
+    let response = {}
+
+    if (!req.query.userId) {
+        response.success = false
+        response.data = { error: `Missing user id`, errorMessage: `Please put name into the request query` };
+        res.status(400).json(response)
+    }
+
+    let recordRaw = localStorage.getItem(req.params.id);
+
+    if (!recordRaw) {
+        response.success = false
+        response.data = { error: `Missing report record`, errorMessage: `Please check report id the request query` };
+        res.status(400).json(response)
+    }
+
+    let record = JSON.parse(recordRaw);
+
+    if (record.data.ownerId != req.query.userId) {
+        response.success = false
+        response.data = {
+            error: `Ownership error`,
+            errorMessage: `You are not the current owner of this report record.
+            \nWait for up to 60 minutes for ownership release.`
+        };
+        res.status(400).json(response)
+    }
+
+    if (record.data.ownershipClaimed) {
+        let record = JSON.parse(recordRaw);
+        setReleaseTimer(record.id)
+        response.success = true
+        response.data = {};
+        status = 201
+    } else {
+        response.success = false
+        response.data = {
+            error: `Ownership already released`,
+            errorMessage: `You have previously release the ownership for this report record or timer is expired`
+        };
+        status = 400
+    }
+
+    res.status(status).json(response)
 })
+
+function setReleaseTimer(id) {
+    setTimeout(() => {
+        let record = JSON.parse(localStorage.getItem(id));
+        record.data.ownershipClaimed = false
+        localStorage.setItem(id, JSON.stringify(record));
+    }, 3600 * 1000);
+}
 
 /*
 
