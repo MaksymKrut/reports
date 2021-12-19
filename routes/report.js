@@ -11,7 +11,6 @@ router.get(`/reports/:id/`, (req, res) => {
 
 
 router.put(`/reports/:id/checkout/`, (req, res) => {
-    let status
     let response = {}
 
     if (!req.query.userId) {
@@ -20,48 +19,20 @@ router.put(`/reports/:id/checkout/`, (req, res) => {
         res.status(400).json(response)
     }
 
-    // Create or update report with new ownership
-    let recordRaw = localStorage.getItem(req.params.id);
-    if (recordRaw) {
-        let record = JSON.parse(recordRaw);
-        if (record.data.ownershipClaimed) {
-            response.success = false
-            response.data = { error: `Checked out`, errorMessage: `Report already checked out` };
-            status = 400
-        } else {
-            // Check out existing report record
-            response.success = true
-            let record = {
-                id: req.params.id,
-                data: {
-                    ownershipClaimed: true,
-                    ownershipStarted: Date.now(),
-                    ownerId: req.query.userId,
-                }
-
-            }
-            localStorage.setItem(record.id, JSON.stringify(record))
-            setReleaseTimer(record.id)
-            status = 201
+    // Create or update new report record in the db and check it out
+    let record = {
+        id: req.params.id,
+        data: {
+            ownershipClaimed: true,
+            ownerId: req.query.userId,
         }
-    } else {
-        // Create new report record in the db and check it out
-        let record = {
-            id: req.params.id,
-            data: {
-                ownershipClaimed: true,
-                ownershipStarted: Date.now(),
-                ownerId: req.query.userId,
-            }
 
-        }
-        response.success = true
-        response.data = { message: `Record was created!`, record: record };
-        localStorage.setItem(record.id, JSON.stringify(record));
-        setReleaseTimer(record.id)
-        status = 201
     }
-    res.status(status).json(response)
+    response.success = true
+    response.data = { message: `Record was created!`, record: record };
+    localStorage.setItem(record.id, JSON.stringify(record));
+    setReleaseTimer(record.id)
+    res.status(201).json(response)
 })
 
 router.put(`/reports/:id/release`, (req, res) => {
@@ -99,7 +70,7 @@ router.put(`/reports/:id/release`, (req, res) => {
         record.data.ownershipClaimed = false
         localStorage.setItem(record.id, JSON.stringify(record));
         response.success = true
-        response.data = {};
+        response.data = { message: `Record was updated!`, record: record };
         status = 201
     } else {
         response.success = false
@@ -147,7 +118,7 @@ router.put(`/reports/:id/renew`, (req, res) => {
         let record = JSON.parse(recordRaw);
         setReleaseTimer(record.id)
         response.success = true
-        response.data = {};
+        response.data = { message: `Timer was updated!`, record: record };
         status = 201
     } else {
         response.success = false
