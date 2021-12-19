@@ -10,7 +10,20 @@ router.get(`/reports/:id/`, (req, res) => {
 })
 
 router.put(`/reports/:id/checkout/`, (req, res) => {
-    /* 
+    // console.log(JSON.stringify(req.body))
+    let status
+    let response = {}
+    if (JSON.stringify(req.body).length <= 2) {
+        response.success = false
+        response.data = { error: `Missing body`, errorMessage: `Please put body into the request` };
+        status = 400
+    } else {
+        response.success = true
+        response.data = { message: `Record was created!`, record: req.body };
+        localStorage.setItem(req.body.id, JSON.stringify(req.body));
+        status = 201
+    }
+    /*
     Create/update report record with 
     {
         id: 213141
@@ -23,20 +36,12 @@ router.put(`/reports/:id/checkout/`, (req, res) => {
     }
     */
     // 0. Check if report is claimed
+    // res.json(JSON.parse(localStorage.getItem(report.id)));
+
     // 1. Create or update report with new ownership
     // 2. Start timer on release endpoint, check env file for value
-    // 3. If other user is checking out this report, show error messagexw
-
-    let report = {
-        id: 213141,
-        data: {
-            ownershipClaimed: true,
-            ownershipStarted: 163234489897,
-            ownerId: 298237,
-        },
-    }
-    localStorage.setItem(report.id, JSON.stringify(report));
-    res.json(JSON.parse(localStorage.getItem(report.id)));
+    // 3. If other user is checking out this report, show error message
+    res.status(status).json(response)
 })
 
 router.put(`/reports/:id/release`, (req, res) => {

@@ -2,6 +2,7 @@ let express = require('express');
 let app = express();
 let reportRoute = require(`./routes/report`);
 
+app.use(express.json());
 app.use(reportRoute);
 
 const PORT = process.env.PORT || 3434;
