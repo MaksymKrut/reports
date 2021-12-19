@@ -1,23 +1,15 @@
 let express = require(`express`);
 let router = express.Router();
+if (typeof localStorage === "undefined" || localStorage === null) {
+    var LocalStorage = require('node-localstorage').LocalStorage;
+    localStorage = new LocalStorage('./storage');
+}
 
-router.get(`/reports/:id/checkout`, (req, res) => {
-    /* 
-    Get report record like 
-    {
-        id: 213141
-        data: {
-            checkedOut: true,
-            ownershipStarted: 163234489897,
-            ownerId: 298237,
-        }
-
-    }
-    */
-    res.send(`you requested a id ${req.params.id} for user ${req.query.name}`);
+router.get(`/reports/:id/`, (req, res) => {
+    res.json(JSON.parse(localStorage.getItem(req.params.id)));
 })
 
-router.put(`/reports/:id/checkout`, (req, res) => {
+router.put(`/reports/:id/checkout/`, (req, res) => {
     /* 
     Create/update report record with 
     {
@@ -33,8 +25,18 @@ router.put(`/reports/:id/checkout`, (req, res) => {
     // 0. Check if report is claimed
     // 1. Create or update report with new ownership
     // 2. Start timer on release endpoint, check env file for value
-    // 3. If other user is checking out this report, show error message
-    res.send(`you requested a id ${req.params.id} for user ${req.query.name}`);
+    // 3. If other user is checking out this report, show error messagexw
+
+    let report = {
+        id: 213141,
+        data: {
+            ownershipClaimed: true,
+            ownershipStarted: 163234489897,
+            ownerId: 298237,
+        },
+    }
+    localStorage.setItem(report.id, JSON.stringify(report));
+    res.json(JSON.parse(localStorage.getItem(report.id)));
 })
 
 router.put(`/reports/:id/release`, (req, res) => {

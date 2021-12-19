@@ -4,8 +4,8 @@
   "description": "Ezra MRI reports API",
   "main": "index.js",
   "scripts": {
-    "serve": "npm index.js",
-    "test": "npm test"
+    "serve": "nodemon index.js",
+    "test": "node test"
   },
   "dependencies": {
     "cors": "2.8.5",
@@ -25,5 +25,8 @@
     "api"
   ],
   "author": "Maksym Krutskykh",
-  "license": "UNLICENSED"
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "nodemon": "2.0.15"
+  }
 }

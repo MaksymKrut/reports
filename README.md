@@ -1,8 +1,8 @@
 ##  Usage
 
 1. Navigate to repo folder in the terminal
-2. Start node/express server with `node index.js`
-3. Make calls via curl or Postman to `http://localhost:3434/report/{id}/checkout` endpoint, where `id` is any number.
+2. Start node/express server with `npm run serve`
+3. Make calls via curl or Postman to `http://localhost:3434/reports/{id}/checkout` endpoint, where `id` is any number.
 
 ## Task
 
