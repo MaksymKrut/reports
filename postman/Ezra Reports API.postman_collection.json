@@ -1,0 +1,137 @@
+{
+	"info": {
+		"_postman_id": "7b05ef3f-7d3e-435e-b434-47af117ad221",
+		"name": "Ezra Reports API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GET report",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3434/reports/213144",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3434",
+					"path": [
+						"reports",
+						"213144"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT report checkout",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3434/reports/213144/checkout?userId=324232",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3434",
+					"path": [
+						"reports",
+						"213144",
+						"checkout"
+					],
+					"query": [
+						{
+							"key": "userId",
+							"value": "324232"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT report release",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": 213141,\n    \"data\": {\n        \"ownershipClaimed\": true,\n        \"ownershipStarted\": 163234489897,\n        \"ownerId\": 298237\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3434/reports/213144/release?userId=324232",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3434",
+					"path": [
+						"reports",
+						"213144",
+						"release"
+					],
+					"query": [
+						{
+							"key": "userId",
+							"value": "324232"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT report renew",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": 213141,\n    \"data\": {\n        \"ownershipClaimed\": true,\n        \"ownershipStarted\": 163234489897,\n        \"ownerId\": 298237\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3434/reports/213144/renew?userId=324232",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3434",
+					"path": [
+						"reports",
+						"213144",
+						"renew"
+					],
+					"query": [
+						{
+							"key": "userId",
+							"value": "324232"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
